@@ -5,7 +5,7 @@ import token_registry.aleo;
 program compliancetoken.aleo {
   // Constants defining the token parameters.
   const COMPLAINT_TOKEN_ID: field = 71619063553950105623552field; // Unique token identifier
-  const ADMIN_ADDRESS: address = aleo157jceqdlj2hesq7dvxq53nzaqcq3pxjc3ypde98jy8tmks0xpuyq2l9j83; // Admin address with minting and issuing privileges
+  const ADMIN_ADDRESS: address = aleo1wcv6hqze26esh0gru484k64yntu9cz0gfu9rn89gx22k2k2e6spq5erapp; // Admin address with minting and issuing privileges
   const MAX_SUPPLY: u128 = 1_000_000_000_000_000u128; // Maximum supply of the token
   const BLOCKS_IN_A_DAY: u32 = 28_800u32; // Number of blocks per day for epoch-based calculations
   const MAX_SPEND_PER_DAY: u128 = 10_000_000_000u128; // Daily spending limit per user
