@@ -1,0 +1,109 @@
+# Aleo Compliance Token
+
+A regulatory-compliant token implementation on the Aleo blockchain with transfer restrictions, spending limits, and whitelist/blacklist functionality.
+
+## Description
+
+This compliance token provides a privacy-preserving token with built-in regulatory compliance features:
+
+* Daily spending limits per user
+* Whitelist and blacklist functionality
+* Admin-controlled token issuance
+* Private transfers with compliance checks
+
+## How It Works
+
+The compliance token works through several key mechanisms:
+
+1. **Admin Control**: Only the designated admin can mint tokens, manage whitelists/blacklists, and issue spending limits to users
+2. **Spending Limits**: Users can't spend more than the configured daily limit (10,000,000,000 tokens)
+3. **Whitelist/Blacklist**: Transactions can be restricted to approved addresses (whitelist) or blocked for specific addresses (blacklist)
+4. **Epoch-Based Tracking**: Daily limits reset based on blockchain epochs (blocks)
+
+## Testing with CLI
+
+### Prerequisites
+- Aleo CLI tools (`leo` and `snarkos`)
+- An Aleo account with test credits
+
+### Basic Testing Commands
+
+1. Initialize the token (admin only):
+```
+leo run initialize
+```
+
+2. Mint the token supply (admin only):
+```
+leo run mint_private
+```
+
+3. Issue a spending limit to a user:
+```
+leo run issue_limit "aleo1ctqrmd3d3jk47a44su6rlqw937nnjv9fzpdugzs0a8qfwrkgcc9sevpanu"
+```
+
+4. Transfer tokens (with spending limit checks):
+```
+leo run transfer_private "{
+  input_token: {
+    owner: aleo1ctqrmd3d3jk47a44su6rlqw937nnjv9fzpdugzs0a8qfwrkgcc9sevpanu.private,
+    token_id: 71619063553950105623552field.private,
+    amount: 5000000000u128.private,
+    authorized: true.private,
+    expiration: 4294967295u32.private,
+    _nonce: 0group.public
+  },
+  spend_limit: {
+    owner: aleo1ctqrmd3d3jk47a44su6rlqw937nnjv9fzpdugzs0a8qfwrkgcc9sevpanu.private,
+    amount_spent: 0u128.private,
+    epoch_spent: 0u32.private,
+    _nonce: 0group.public
+  },
+  amount: 1000000u128,
+  recipient: aleo1pvmkmctwfrw8ahhg582ujjqrjuw0yk55smxk7xpuajk3jd3ac5gqsaecv0,
+  epoch: 123u32
+}"
+```
+
+5. Manage whitelist and blacklist (admin only):
+```
+# Enable whitelist
+leo run toggle_whitelist true
+
+# Add address to whitelist
+leo run add_to_whitelist "aleo1ctqrmd3d3jk47a44su6rlqw937nnjv9fzpdugzs0a8qfwrkgcc9sevpanu"
+
+# Add address to blacklist
+leo run add_to_blacklist "aleo1pvmkmctwfrw8ahhg582ujjqrjuw0yk55smxk7xpuajk3jd3ac5gqsaecv0"
+```
+
+### Deployment to Testnet
+
+1. Build the program:
+```
+leo build
+```
+
+2. Deploy to testnet:
+```
+snarkos developer deploy compliancetoken.aleo --private-key APrivateKey1...
+```
+
+3. Initialize the token on testnet:
+```
+snarkos developer execute compliancetoken.aleo initialize "{}" --private-key APrivateKey1...
+```
+
+## Key Constants
+
+- `MAX_SUPPLY`: 1,000,000,000,000,000 tokens
+- `MAX_SPEND_PER_DAY`: 10,000,000,000 tokens
+- `BLOCKS_IN_A_DAY`: 28,800 blocks
+
+## Notes
+
+- All token transfers are validated against spending limits
+- The whitelist must be enabled (via `toggle_whitelist`) to enforce whitelist checks
+- Blacklist checks are always enforced when addresses are blacklisted
+- Spending limits reset daily based on blockchain epochs
